@@ -11,16 +11,15 @@ services:
     networks:
       - app_net
     volumes:
-      - ${INSTALL_BASE_DIR}/opensourcepos/database/init:/docker-entrypoint-initdb.d
       - ${INSTALL_BASE_DIR}/mysql-data/:/var/lib/mysql:rw
     environment:
-      - MYSQL_ROOT_PASSWORD=pointofsale
+      - MYSQL_ROOT_PASSWORD=3TRPgUAm*7LpbE
       - MYSQL_DATABASE=ospos
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=pointofsale
+      - MYSQL_USER=tech
+      - MYSQL_PASSWORD=3TRPgUAm*7LpbE
 
   ospos:
-    image: php-apache-ospos:7.4.29
+    image: dchristm77/php-apache-ospos:latest
     container_name: ospos-php-apache
     restart: always
     depends_on:
@@ -32,9 +31,9 @@ services:
     volumes:
       - ${INSTALL_BASE_DIR}/opensourcepos/:/var/www/:rw
     environment:
-      - CI_ENVIRONMENT=development
-      - MYSQL_USERNAME=admin
-      - MYSQL_PASSWORD=pointofsale
+      - CI_ENVIRONMENT=production
+      - MYSQL_USERNAME=tech
+      - MYSQL_PASSWORD=3TRPgUAm*7LpbE
       - MYSQL_DB_NAME=ospos
       - MYSQL_HOST_NAME=ospos-mysql
       - PHP_TIMEZONE=UTC

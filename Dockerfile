@@ -9,5 +9,5 @@ COPY ./apache-vhost.conf /etc/apache2/sites-available/ospos.conf
 RUN ln -s /etc/apache2/sites-available/ospos.conf /etc/apache2/sites-enabled/ospos.conf && \
   rm /etc/apache2/sites-enabled/000-default.conf
 
-RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
