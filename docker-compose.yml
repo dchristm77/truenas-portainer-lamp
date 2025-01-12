@@ -1,0 +1,51 @@
+networks:
+  app_net:
+
+services:
+  mysql:
+    image: mysql:8.0.40
+    container_name: ospos-mysql
+    restart: always
+    expose:
+      - "3306"
+    networks:
+      - app_net
+    volumes:
+      - ${INSTALL_BASE_DIR}/opensourcepos/database/init:/docker-entrypoint-initdb.d
+      - ${INSTALL_BASE_DIR}/mysql-data/:/var/lib/mysql:rw
+    environment:
+      - MYSQL_ROOT_PASSWORD=pointofsale
+      - MYSQL_DATABASE=ospos
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=pointofsale
+
+  ospos:
+    image: php-apache-ospos:7.4.29
+    container_name: ospos-php-apache
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "80:80"
+    networks:
+      - app_net
+    volumes:
+      - ${INSTALL_BASE_DIR}/opensourcepos/:/var/www/:rw
+    environment:
+      - CI_ENVIRONMENT=development
+      - MYSQL_USERNAME=admin
+      - MYSQL_PASSWORD=pointofsale
+      - MYSQL_DB_NAME=ospos
+      - MYSQL_HOST_NAME=ospos-mysql
+      - PHP_TIMEZONE=UTC
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - 8080:80
+    networks:
+      - app_net
+    environment:
+      - PMA_HOST=ospos-mysql
+    depends_on:
+      - mysql
