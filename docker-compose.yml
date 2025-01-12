@@ -1,6 +1,3 @@
-networks:
-  app_net:
-
 services:
   mysql:
     image: mysql:8.0.40
@@ -9,14 +6,17 @@ services:
     expose:
       - "3306"
     networks:
-      - app_net
+      - lamp_net
     volumes:
-      - ${INSTALL_BASE_DIR}/mysql-data/:/var/lib/mysql:rw
+      - mysql-data:/var/lib/mysql:rw
     environment:
-      - MYSQL_ROOT_PASSWORD=3TRPgUAm*7LpbE
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
       - MYSQL_DATABASE=ospos
       - MYSQL_USER=tech
-      - MYSQL_PASSWORD=3TRPgUAm*7LpbE
+      - MYSQL_PASSWORD_FILE=/run/secrets/db_password
+    secrets:
+      - db_root_password
+      - db_password
 
   ospos:
     image: dchristm77/php-apache-ospos:latest
@@ -25,26 +25,40 @@ services:
     depends_on:
       - mysql
     ports:
-      - "80:80"
+      - "8088:80"
     networks:
-      - app_net
+      - lamp_net
     volumes:
-      - ${INSTALL_BASE_DIR}/opensourcepos/:/var/www/:rw
+      - /mnt/CNASV2/Webserver/www/html/:/var/www/:rw
     environment:
       - CI_ENVIRONMENT=production
       - MYSQL_USERNAME=tech
-      - MYSQL_PASSWORD=3TRPgUAm*7LpbE
+      - MYSQL_PASSWORD_FILE=/run/secrets/db_password
       - MYSQL_DB_NAME=ospos
       - MYSQL_HOST_NAME=ospos-mysql
       - PHP_TIMEZONE=UTC
+    secrets:
+      - db_password
 
   phpmyadmin:
     image: phpmyadmin:latest
     ports:
       - 8080:80
     networks:
-      - app_net
+      - lamp_net
     environment:
       - PMA_HOST=ospos-mysql
     depends_on:
       - mysql
+
+networks:
+  lamp_net:
+
+volumes:
+  mysql-data:
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  db_root_password:
+    file: ./secrets/db_root_password.txt
