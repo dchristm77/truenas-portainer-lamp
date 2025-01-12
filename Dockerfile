@@ -11,3 +11,5 @@ RUN ln -s /etc/apache2/sites-available/ospos.conf /etc/apache2/sites-enabled/osp
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
+RUN echo "Adding user uid 568 (apps) with gid 3002 (webserver)"
+RUN ( addgroup --gid 3002 webserver || true ) && ( adduser --uid 568 --gid 3002 apps )

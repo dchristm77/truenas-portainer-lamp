@@ -22,6 +22,7 @@ services:
     image: dchristm77/php-apache-ospos:latest
     container_name: ospos-php-apache
     restart: always
+    user: 568:3002
     depends_on:
       - mysql
     ports:
@@ -29,7 +30,7 @@ services:
     networks:
       - lamp_net
     volumes:
-      - /mnt/CNASV2/Webserver/www/html/:/var/www/:rw
+      - /mnt/CNASV2/Webserver/www/html/:/var/www/html/:rw
     environment:
       - CI_ENVIRONMENT=production
       - MYSQL_USERNAME=tech
