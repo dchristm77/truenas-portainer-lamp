@@ -10,13 +10,10 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql:rw
     environment:
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+      - MYSQL_ROOT_PASSWORD=pointofsale
       - MYSQL_DATABASE=ospos
       - MYSQL_USER=tech
-      - MYSQL_PASSWORD_FILE=/run/secrets/db_password
-    secrets:
-      - db_root_password
-      - db_password
+      - MYSQL_PASSWORD=pointofsale
 
   ospos:
     image: dchristm77/php-apache-ospos:latest
@@ -34,12 +31,10 @@ services:
     environment:
       - CI_ENVIRONMENT=production
       - MYSQL_USERNAME=tech
-      - MYSQL_PASSWORD_FILE=/run/secrets/db_password
+      - MYSQL_PASSWORD=pointofsale
       - MYSQL_DB_NAME=ospos
       - MYSQL_HOST_NAME=ospos-mysql
       - PHP_TIMEZONE=UTC
-    secrets:
-      - db_password
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -57,9 +52,3 @@ networks:
 
 volumes:
   mysql-data:
-
-secrets:
-  db_password:
-    file: ./secrets/db_password.txt
-  db_root_password:
-    file: ./secrets/db_root_password.txt
